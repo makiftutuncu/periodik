@@ -7,6 +7,53 @@ import kotlin.coroutines.CoroutineContext
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
 
+/**
+ * Periodik is a read-only property delegate that can provide a value refreshed periodically.
+ *
+ * A quick example that gets a new value every 2 seconds:
+ * ```kotlin
+ * import dev.akif.periodik
+ * import dev.akif.periodik.Schedule
+ *
+ * val message: String by periodik().on(Schedule.every(2.seconds)).build { previous ->
+ *     if (previous == null) {
+ *         "Hello world!"
+ *     } else {
+ *         "Hello again on ${System.currentTimeMillis}!"
+ *     }
+ * }
+ * ```
+ *
+ * @param Type
+ * the type of the property
+ *
+ * @param schedule
+ * the [Schedule][Schedule] defining the period
+ *
+ * @param currentInstant
+ * the function to get the current [Instant][Instant]
+ *
+ * @param adjustment
+ * the function to adjust the [Instant][Instant]s
+ *
+ * @param coroutineContext
+ * the [CoroutineContext] to use for blocking coroutines
+ *
+ * @param debug
+ * the function to log debug messages
+ *
+ * @param log
+ * the function to log messages
+ *
+ * @param error
+ * the function to log error messages and throw an [Exception][Exception]
+ *
+ * @param nextValue
+ * the function to get the next value, providing the last value as input
+ *
+ * @see dev.akif.periodik
+ * @see PeriodikBuilder
+ */
 @Suppress("LongParameterList")
 class Periodik<out Type> internal constructor(
     private val schedule: Schedule,
@@ -22,6 +69,7 @@ class Periodik<out Type> internal constructor(
     private val lastValue: AtomicReference<Type?> = AtomicReference(null)
     private val lastGetInstant: AtomicReference<Instant?> = AtomicReference(null)
 
+    /** @inheritDoc */
     override fun getValue(thisRef: Any, property: KProperty<*>): Type {
         name.compareAndSet(null, property.name)
         return runBlocking(coroutineContext) { getIfNeeded() }
@@ -73,6 +121,7 @@ class Periodik<out Type> internal constructor(
         }
     }
 
+    /** @inheritDoc */
     override fun toString(): String =
         "Periodik(${name.get() ?: "schedule=$schedule"})"
 }

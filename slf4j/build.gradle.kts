@@ -5,7 +5,7 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.jetbrains.dokka.base.DokkaBase
 import org.jetbrains.dokka.base.DokkaBaseConfiguration
-import java.net.URL
+import java.net.URI
 import java.time.LocalDate
 
 plugins {
@@ -73,15 +73,15 @@ tasks.register<Jar>("dokkaHtmlJar") {
 tasks.dokkaHtml.configure {
     dokkaSourceSets {
         named("main") {
-            failOnWarning.set(false) // TODO
+            failOnWarning.set(true)
             reportUndocumented.set(true)
             skipEmptyPackages.set(true)
             skipDeprecated.set(false)
             suppressGeneratedFiles.set(true)
-            includes.from("Module.md")
+            includes.from("../Module.md")
             sourceLink {
                 localDirectory.set(file("src/main/kotlin"))
-                remoteUrl.set(URL("https://github.com/makiftutuncu/periodik/blob/main/api/src/main/kotlin"))
+                remoteUrl.set(URI("https://github.com/makiftutuncu/periodik/blob/main/api/src/main/kotlin").toURL())
                 remoteLineSuffix.set("#L")
             }
         }
