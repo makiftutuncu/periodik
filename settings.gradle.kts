@@ -1,2 +1,2 @@
 rootProject.name = "periodik"
-include("periodik", "examples:exchange-rates")
+include("core", "slf4j")
