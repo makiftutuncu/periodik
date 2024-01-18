@@ -7,7 +7,7 @@ import org.jetbrains.dokka.gradle.DokkaTaskPartial
 import java.net.URI
 
 plugins {
-    kotlin("jvm") version "1.9.21"
+    kotlin("jvm") version "1.9.22"
     `java-library`
     `maven-publish`
     idea
