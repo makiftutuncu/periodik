@@ -5,6 +5,7 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.jetbrains.dokka.base.DokkaBase
 import org.jetbrains.dokka.base.DokkaBaseConfiguration
+import org.jetbrains.dokka.gradle.DokkaTaskPartial
 import java.net.URI
 import java.time.LocalDate
 
@@ -29,7 +30,7 @@ dependencies {
 
 buildscript {
     dependencies {
-        classpath("org.jetbrains.dokka:dokka-base:1.8.10")
+        classpath("org.jetbrains.dokka:dokka-base:1.9.10")
     }
 }
 
@@ -65,23 +66,25 @@ tasks.getByName<Test>("test") {
 }
 
 tasks.register<Jar>("dokkaHtmlJar") {
-    dependsOn(tasks.dokkaHtml)
-    from(tasks.dokkaHtml.flatMap { it.outputDirectory })
+    dependsOn(tasks.dokkaHtmlPartial)
+    from(tasks.dokkaHtmlPartial.flatMap { it.outputDirectory })
     archiveClassifier.set("javadoc")
 }
 
-tasks.dokkaHtml.configure {
+tasks.withType<DokkaTaskPartial>().configureEach {
     dokkaSourceSets {
-        named("main") {
-            failOnWarning.set(true)
-            reportUndocumented.set(true)
-            skipEmptyPackages.set(true)
-            skipDeprecated.set(false)
-            suppressGeneratedFiles.set(true)
-            includes.from("../Module.md")
+        configureEach {
+            includes.from("Module.md")
+        }
+    }
+}
+
+tasks.dokkaHtmlPartial.configure {
+    dokkaSourceSets {
+        configureEach {
             sourceLink {
                 localDirectory.set(file("src/main/kotlin"))
-                remoteUrl.set(URI("https://github.com/makiftutuncu/periodik/blob/main/api/src/main/kotlin").toURL())
+                remoteUrl.set(URI("https://github.com/makiftutuncu/periodik/blob/main/slf4j/src/main/kotlin").toURL())
                 remoteLineSuffix.set("#L")
             }
         }
@@ -108,7 +111,7 @@ publishing {
             }
             pom {
                 name.set(project.name)
-                description.set("TODO")
+                description.set("Periodik is a read-only property delegate that can provide a value refreshed periodically")
                 url.set("https://github.com/makiftutuncu/periodik")
                 licenses {
                     license {
