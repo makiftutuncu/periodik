@@ -9,7 +9,6 @@ plugins {
 allprojects {
     group = "dev.akif"
     version = "0.0.1"
-
 }
 
 subprojects {
@@ -24,19 +23,6 @@ subprojects {
             suppressGeneratedFiles.set(true)
         }
     }
-}
-
-kotlin {
-    jvmToolchain(17)
-}
-
-java {
-    toolchain {
-        languageVersion.set(JavaLanguageVersion.of(17))
-    }
-    sourceCompatibility = JavaVersion.VERSION_17
-    targetCompatibility = JavaVersion.VERSION_17
-    withSourcesJar()
 }
 
 nexusPublishing {
