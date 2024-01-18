@@ -44,7 +44,7 @@ idea {
 tasks.withType<KotlinCompile> {
     kotlinOptions {
         freeCompilerArgs = listOf("-Xjsr305=strict", "-Xjvm-default=all")
-        jvmTarget = JvmTarget.JVM_21.target
+        jvmTarget = JvmTarget.JVM_17.target
         languageVersion = KotlinVersion.KOTLIN_1_9.version
     }
 }
