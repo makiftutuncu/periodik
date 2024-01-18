@@ -5,6 +5,7 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.jetbrains.dokka.base.DokkaBase
 import org.jetbrains.dokka.base.DokkaBaseConfiguration
+import org.jetbrains.dokka.gradle.DokkaMultiModuleTask
 import org.jetbrains.dokka.gradle.DokkaTaskPartial
 import java.net.URI
 import java.time.LocalDate
@@ -79,7 +80,7 @@ tasks.getByName<Test>("test") {
 }
 
 tasks.register<Jar>("dokkaHtmlJar") {
-    dependsOn(tasks.dokkaHtmlPartial)
+    dependsOn(tasks.withType<DokkaMultiModuleTask>())
     from(tasks.dokkaHtmlPartial.flatMap { it.outputDirectory })
     archiveClassifier.set("javadoc")
 }
