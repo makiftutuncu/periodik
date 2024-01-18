@@ -2,9 +2,9 @@
 
 Periodik is a read-only property delegate that can provide a value refreshed periodically. It is inspired by [periodic](https://github.com/dvgica/periodic).
 
-| Latest Version | Java Version | Kotlin Version |
-|----------------| ------------ |----------------|
-| 0.0.1          | 17           | 1.9.21         |
+| Latest Version | Kotlin Version | Java Version |
+|----------------|----------------|--------------|
+| 0.0.1          | 1.9.22         | 17           |
 
 ## Table of Contents
 
