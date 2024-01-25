@@ -14,13 +14,14 @@ allprojects {
 subprojects {
     apply(plugin = "org.jetbrains.dokka")
 
-    tasks.withType<DokkaTaskPartial>().configureEach {
+    tasks.dokkaHtml.configure {
         dokkaSourceSets.configureEach {
             failOnWarning.set(true)
             reportUndocumented.set(true)
             skipEmptyPackages.set(true)
             skipDeprecated.set(false)
             suppressGeneratedFiles.set(true)
+            includes.from("Module.md")
         }
     }
 }
