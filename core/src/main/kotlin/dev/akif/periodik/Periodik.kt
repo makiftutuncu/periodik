@@ -19,7 +19,7 @@ import kotlin.reflect.KProperty
  *     if (previous == null) {
  *         "Hello world!"
  *     } else {
- *         "Hello again on ${System.currentTimeMillis}!"
+ *         "Hello again on ${System.currentTimeMillis()}!"
  *     }
  * }
  * ```

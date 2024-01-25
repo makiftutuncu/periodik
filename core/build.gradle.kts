@@ -1,10 +1,8 @@
 import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
-import org.jetbrains.dokka.gradle.DokkaMultiModuleTask
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import org.jetbrains.dokka.gradle.DokkaTaskPartial
 import java.net.URI
 
 plugins {
@@ -75,17 +73,9 @@ tasks.getByName<Test>("test") {
 }
 
 tasks.register<Jar>("dokkaHtmlJar") {
-    dependsOn(tasks.withType<DokkaMultiModuleTask>())
-    from(tasks.dokkaHtmlPartial.flatMap { it.outputDirectory })
+    dependsOn(tasks.dokkaHtml)
+    from(tasks.dokkaHtml.flatMap { it.outputDirectory })
     archiveClassifier.set("javadoc")
-}
-
-tasks.withType<DokkaTaskPartial>().configureEach {
-    dokkaSourceSets {
-        configureEach {
-            includes.from("Module.md")
-        }
-    }
 }
 
 tasks.dokkaHtmlPartial.configure {
