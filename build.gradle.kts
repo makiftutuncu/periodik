@@ -1,5 +1,3 @@
-import org.jetbrains.dokka.gradle.DokkaTaskPartial
-
 plugins {
     kotlin("jvm") version "1.9.22"
     id("io.github.gradle-nexus.publish-plugin") version "1.3.0"
@@ -8,7 +6,7 @@ plugins {
 
 allprojects {
     group = "dev.akif"
-    version = "0.0.2"
+    version = "0.1.0-SNAPSHOT"
 }
 
 subprojects {

@@ -19,7 +19,11 @@ repositories {
 
 dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.0")
-    testImplementation(kotlin("test"))
+    testImplementation("org.jetbrains.kotlin:kotlin-test:1.9.22") {
+        exclude("org.junit.jupiter")
+    }
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.0")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.10.1")
 }
 
 buildscript {
@@ -107,7 +111,7 @@ publishing {
             }
             pom {
                 name.set(project.name)
-                description.set("Periodik is a read-only property delegate that can provide a value refreshed periodically")
+                description.set("Periodik is a read-only property delegate that can provide a value updated periodically")
                 url.set("https://github.com/makiftutuncu/periodik")
                 licenses {
                     license {

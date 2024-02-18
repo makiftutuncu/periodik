@@ -1,10 +1,10 @@
 # Periodik
 
-Periodik is a read-only property delegate that can provide a value refreshed periodically. It is inspired by [periodic](https://github.com/dvgica/periodic).
+Periodik is a read-only property delegate that can provide a value updated periodically. It is inspired by [periodic](https://github.com/dvgica/periodic).
 
 | Latest Version | Kotlin Version | Java Version |
 |----------------|----------------|--------------|
-| 0.0.2          | 1.9.22         | 17           |
+| 0.1.0          | 1.9.22         | 17           |
 
 ## Table of Contents
 
@@ -21,8 +21,8 @@ This project consists of following modules. You can click on a module for more i
 
 | Name                     | Details             | Documentation                                                                                                                                                                 |
 |--------------------------|---------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| [core](core/README.md)   | Core implementation | [![](https://img.shields.io/badge/docs-0.0.2-brightgreen.svg?style=for-the-badge&logo=kotlin&color=0095d5&labelColor=333333)](https://javadoc.io/doc/dev.akif/periodik-core)  |
-| [slf4j](slf4j/README.md) | SLF4J integration   | [![](https://img.shields.io/badge/docs-0.0.2-brightgreen.svg?style=for-the-badge&logo=kotlin&color=0095d5&labelColor=333333)](https://javadoc.io/doc/dev.akif/periodik-slf4j) |
+| [core](core/README.md)   | Core implementation | [![](https://img.shields.io/badge/docs-0.1.0-brightgreen.svg?style=for-the-badge&logo=kotlin&color=0095d5&labelColor=333333)](https://javadoc.io/doc/dev.akif/periodik-core)  |
+| [slf4j](slf4j/README.md) | SLF4J integration   | [![](https://img.shields.io/badge/docs-0.1.0-brightgreen.svg?style=for-the-badge&logo=kotlin&color=0095d5&labelColor=333333)](https://javadoc.io/doc/dev.akif/periodik-slf4j) |
 
 ## Examples
 
@@ -38,7 +38,7 @@ To test your changes during development:
 
 1. Bump your version in [build.gradle.kts](build.gradle.kts#L9) and append `-SNAPSHOT`.
 2. Run `gradle publishToMavenLocal` to publish artifacts with your changes to your local Maven repository.
-3. In the project you use spring-boot-crud, update the version of spring-boot-crud dependencies to your new snapshot version. Make sure you have `mavenLocal()` in your `repositories` in your build definition for this to work.
+3. In the project you use periodik, update the version of periodik dependencies to your new snapshot version. Make sure you have `mavenLocal()` in your `repositories` in your build definition for this to work.
 
 ## Releases
 

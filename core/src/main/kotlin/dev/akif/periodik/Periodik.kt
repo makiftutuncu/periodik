@@ -3,122 +3,152 @@ package dev.akif.periodik
 import kotlinx.coroutines.*
 import java.time.Instant
 import java.util.concurrent.atomic.AtomicReference
-import kotlin.coroutines.CoroutineContext
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
+import kotlin.time.Duration.Companion.milliseconds
 
 /**
- * Periodik is a read-only property delegate that can provide a value refreshed periodically.
+ * Periodik is a read-only property delegate that can provide a value updated periodically.
  *
- * A quick example that gets a new value every 2 seconds:
+ * A quick example that gets and logs a new value every 2 seconds:
  * ```kotlin
  * import dev.akif.periodik
  * import dev.akif.periodik.Schedule
  *
- * val message: String by periodik().on(Schedule.every(2.seconds)).build { previous ->
- *     if (previous == null) {
+ * val message by periodik<String>(Schedule.every(2.seconds)).build { previous ->
+ *     val newValue = if (previous == null) {
  *         "Hello world!"
  *     } else {
  *         "Hello again on ${System.currentTimeMillis()}!"
  *     }
+ *     this.log(newValue)
+ *     newValue
  * }
  * ```
  *
- * @param Type
- * the type of the property
+ * @param Type type of the property
  *
- * @param schedule
- * the [Schedule][Schedule] defining the period
- *
- * @param currentInstant
- * the function to get the current [Instant][Instant]
- *
- * @param adjustment
- * the function to adjust the [Instant][Instant]s
- *
- * @param coroutineContext
- * the [CoroutineContext] to use for blocking coroutines
- *
- * @param debug
- * the function to log debug messages
- *
- * @param log
- * the function to log messages
- *
- * @param error
- * the function to log error messages and throw an [Exception][Exception]
- *
- * @param nextValue
- * the function to get the next value, providing the last value as input
+ * @param schedule [Schedule] with which to update the value
+ * @param currentInstant function to use for getting the current [Instant]
+ * @param adjustment function to use for adjusting the [Instant]s before using them in time calculations
+ * @param dispatcher [CoroutineDispatcher] to use for blocking coroutines when needed
+ * @param wait function to use for waiting for a given [kotlin.time.Duration]
+ * @param debug function to use for logging debug messages
+ * @param log function to use for logging messages
+ * @param error function to use for logging error messages and throwing an [Exception]
+ * @param deferInitialization whether to initialize the property eagerly or lazily
+ * @param nextValue function to use for getting the next value with the last known value
+ * as function input so that it can be used in calculation of the next value
  *
  * @see dev.akif.periodik
  * @see PeriodikBuilder
  */
 @Suppress("LongParameterList")
-class Periodik<out Type> internal constructor(
-    private val schedule: Schedule,
-    private val currentInstant: () -> Instant,
-    private val adjustment: (Instant) -> Instant,
-    private val coroutineContext: CoroutineContext,
-    private val debug: (String) -> Unit,
-    private val log: (String) -> Unit,
-    private val error: (String) -> Nothing,
-    private val nextValue: (Type?) -> Type
+class Periodik<Type> internal constructor(
+    val schedule: Schedule,
+    val currentInstant: Periodik<Type>.() -> Instant,
+    val adjustment: Periodik<Type>.(Instant) -> Instant,
+    val dispatcher: CoroutineDispatcher,
+    val wait: suspend Periodik<Type>.(kotlin.time.Duration) -> Unit,
+    val debug: Periodik<Type>.(String) -> Unit,
+    val log: Periodik<Type>.(String) -> Unit,
+    val error: Periodik<Type>.(String) -> Nothing,
+    deferInitialization: Boolean,
+    private val nextValue: suspend Periodik<Type>.(Type?) -> Type
 ) : ReadOnlyProperty<Any, Type> {
+    /** @suppress */
+    companion object {
+        /**
+         * Default [CoroutineDispatcher] to use when initializing a [Periodik]
+         */
+        val defaultDispatcher: CoroutineDispatcher = Dispatchers.IO
+    }
+
     private val name: AtomicReference<String?> = AtomicReference(null)
     private val lastValue: AtomicReference<Type?> = AtomicReference(null)
-    private val lastGetInstant: AtomicReference<Instant?> = AtomicReference(null)
+    private val lastUpdateInstant: AtomicReference<Instant?> = AtomicReference(null)
+    private val lastUpdateJob: AtomicReference<Job?> = AtomicReference(null)
+
+    private val scope: CoroutineScope = CoroutineScope(dispatcher)
+
+    init {
+        if (!deferInitialization) {
+            log("Eagerly initializing Periodik(schedule=$schedule)")
+            updateValue(defaultDispatcher)
+        }
+    }
 
     /** @inheritDoc */
     override fun getValue(thisRef: Any, property: KProperty<*>): Type {
-        name.compareAndSet(null, property.name)
-        return runBlocking(coroutineContext) { getIfNeeded() }
-    }
-
-    private suspend fun getIfNeeded(): Type {
-        if (canReuseLastValue()) {
-            return lastValue.get() ?: error("Value should not be null here")
+        if (name.compareAndSet(null, property.name)) {
+            log("Initializing $this")
+            updateValue(defaultDispatcher)
         }
-        return get()
+
+        if (!canReuseLastValue()) {
+            return updateValue(dispatcher)
+        }
+
+        return getLastValue()
     }
 
-    @OptIn(DelicateCoroutinesApi::class)
-    internal suspend fun get(): Type {
-        log("Getting a new value of $this")
-
-        val instant = currentInstant()
-        val value = nextValue(lastValue.get())
+    private fun updateValue(dispatcher: CoroutineDispatcher): Type {
+        log("Updating the value of $this")
+        val value = runBlocking(dispatcher) {
+            nextValue(lastValue.get())
+        }
         lastValue.set(value)
-        lastGetInstant.set(instant)
+        val instant = currentInstant()
+        lastUpdateInstant.set(instant)
         debug("$this has a new value at $instant: $value")
 
-        val nextGetInstant = adjustment(schedule.nextOccurrence(instant))
-        GlobalScope.async {
-            debug("${this@Periodik} will be get again at $nextGetInstant")
-            delay(nextGetInstant.toEpochMilli() - instant.toEpochMilli())
-            get()
-        }
+        scheduleNextUpdate()
 
         return value
     }
 
+    private fun scheduleNextUpdate() {
+        val (lastInstant, nextInstant) = getLastAndNextUpdateTime()
+        val delayDuration = (nextInstant.toEpochMilli() - lastInstant.toEpochMilli()).milliseconds
+        debug("$this will be updated again at $nextInstant")
+
+        lastUpdateJob.getAndUpdate { lastJob ->
+            lastJob?.also {
+                debug("Cancelling the last update job of $this")
+                it.cancel()
+            }
+            scope.launch(dispatcher) {
+                wait(delayDuration)
+                updateValue(dispatcher)
+            }
+        }
+    }
+
     @Suppress("ReturnCount")
     private fun canReuseLastValue(): Boolean {
-        if (lastValue.get() == null || lastGetInstant.get() == null) {
+        if (lastValue.get() == null) {
             return false
         }
 
-        val lastInstant = lastGetInstant.get() ?: error("Value should not be null here")
-        val nextInstant = adjustment(schedule.nextOccurrence(lastInstant))
-        val isInFuture = currentInstant().toEpochMilli() < nextInstant.toEpochMilli()
+        val (lastInstant, nextInstant) = getLastAndNextUpdateTime()
+        val now = currentInstant()
 
-        return if (isInFuture) {
-            debug("Reusing last value of $this for lastInstant $lastInstant and nextInstant $nextInstant")
+        return if (now.toEpochMilli() <= nextInstant.toEpochMilli()) {
+            debug("Reusing last value of $this updated at $lastInstant")
             true
         } else {
-            log("Value of $this is expired")
+            log("Value of $this is expired at $nextInstant")
             false
         }
+    }
+
+    private fun getLastValue(): Type =
+        lastValue.get() ?: error("Value should not be null here")
+
+    private fun getLastAndNextUpdateTime(): Pair<Instant, Instant> {
+        val lastInstant = lastUpdateInstant.get() ?: error("Value should not be null here")
+        val nextInstant = adjustment(schedule.nextOccurrence(lastInstant))
+        return lastInstant to nextInstant
     }
 
     /** @inheritDoc */
