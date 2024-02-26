@@ -1,6 +1,6 @@
 # periodik-core
 
-This is the core module of periodik. It is a read-only property delegate that can provide a value refreshed periodically.
+This is the core module of periodik. It is a read-only property delegate that can provide a value updated periodically.
 
 ## Table of Contents
 
@@ -10,20 +10,20 @@ This is the core module of periodik. It is a read-only property delegate that ca
 
 ## Getting Started
 
-To get started, add periodik-core as a dependency to your existing project.
+To get started, add `periodik-core` as a dependency to your existing project.
 
 For Gradle with Kotlin DSL, add following to `build.gradle.kts`:
 
 ```kotlin
 dependencies {
-  implementation('dev.akif:periodik-core:0.0.2')
+  implementation('dev.akif:periodik-core:0.1.0')
 }
 ```
 For Gradle, add following to `build.gradle`:
 
 ```kotlin
 dependencies {
-  implementation 'dev.akif:periodik-core:0.0.2'
+  implementation 'dev.akif:periodik-core:0.1.0'
 }
 ```
 For Maven, add following to your `pom.xml`:
@@ -32,7 +32,7 @@ For Maven, add following to your `pom.xml`:
 <dependency>
     <groupId>dev.akif</groupId>
     <artifactId>periodik-core</artifactId>
-    <version>0.0.2</version>
+    <version>0.1.0</version>
 </dependency>
 ```
 
@@ -50,8 +50,11 @@ import dev.akif.periodik.Schedule
 import kotlin.time.Duration.Companion.seconds
 
 class MyClass {
-    val property: String by periodik().on(Schedule.every(2.seconds)).build {
-        "Time: ${System.currentTimeMillis()}!"
+    val property by periodik<String>(Schedule.every(2.seconds)).build {
+        // `currentInstant`, `log` and other values in the `Periodik` are accessible!
+        val time = "Time: ${currentInstant()}!"
+        log(time)
+        time
     }
 }
 ```

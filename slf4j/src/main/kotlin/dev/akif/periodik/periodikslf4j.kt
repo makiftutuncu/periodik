@@ -6,17 +6,21 @@ import org.slf4j.LoggerFactory
 /**
  * Sets logging functions to use SLF4J
  *
- * @param logger
- * SLF4J logger to use
+ * @param Type type of the property
  *
- * @return
- * the [Periodik][Periodik] instance so further customizations can be made
+ * @receiver the [PeriodikBuilder] instance
+ *
+ * @param logger SLF4J logger to use, with `dev.akif.periodik.Periodik` as the default
+ *
+ * @return the [PeriodikBuilder] instance so further customizations can be made
  */
-fun PeriodikBuilder.loggingWithSlf4j(logger: Logger = LoggerFactory.getLogger(Periodik::class.java)): PeriodikBuilder =
+fun <Type> PeriodikBuilder<Type>.logBySlf4j(
+    logger: Logger = LoggerFactory.getLogger(Periodik::class.java)
+): PeriodikBuilder<Type> =
     apply {
-        debug { logger.debug(it) }
-        log { logger.info(it) }
-        error {
+        debugBy { logger.debug(it) }
+        logBy { logger.info(it) }
+        errorBy {
             logger.error(it)
             throw IllegalStateException(it)
         }

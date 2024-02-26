@@ -1,26 +1,27 @@
 package dev.akif
 
 import dev.akif.periodik.PeriodikBuilder
+import dev.akif.periodik.Schedule
 import kotlinx.coroutines.Dispatchers
 import java.time.Instant
 
 /**
- * Creates a [PeriodikBuilder][PeriodikBuilder]
- * with default values so that further customizations can be made
- * before building the [Periodik][Periodik] instance
+ * Creates a [PeriodikBuilder] with default behaviors and allows for further customizations
+ * before building the [Periodik][dev.akif.periodik.Periodik] instance
  *
- * @return
- * a [PeriodikBuilder] that will
- * * get current [Instant][Instant] by calling [Instant.now]
- * * not make any adjustments to the [Instant][Instant]s
- * * use [Dispatchers.Default] for blocking coroutines
- * * use default logging which logs to [System.out] and throws [IllegalStateException] on errors
- * * initializes the property eagerly
+ * The default behaviors:
+ * - getting the current [Instant] by calling [Instant.now]
+ * - not making any adjustments to the [Instant]s
+ * - using [Dispatchers.IO] for blocking coroutines when needed
+ * - waiting for a given [kotlin.time.Duration] by calling [kotlinx.coroutines.delay]
+ * - logging messages to [System.out]
+ * - logging errors to [System.err] and throwing an [IllegalStateException]
+ * - initializing the property eagerly
+ *
+ * @param Type type of the property
+ *
+ * @param schedule [Schedule] with which to update the value
+ *
+ * @return a [PeriodikBuilder] with default behaviors
  */
-fun periodik(): PeriodikBuilder =
-    PeriodikBuilder()
-        .gettingInstantBy { Instant.now() }
-        .adjustingInstantBy { it }
-        .blockingOn(Dispatchers.Default)
-        .defaultLogging()
-        .initializeEagerly()
+fun <Type> periodik(schedule: Schedule): PeriodikBuilder<Type> = PeriodikBuilder(schedule)

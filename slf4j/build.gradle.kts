@@ -24,7 +24,6 @@ dependencies {
     implementation(project(":core"))
     implementation("ch.qos.logback:logback-classic:1.5.0")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.0")
-    testImplementation(kotlin("test"))
 }
 
 buildscript {
@@ -115,7 +114,7 @@ publishing {
             }
             pom {
                 name.set(project.name)
-                description.set("Periodik is a read-only property delegate that can provide a value refreshed periodically")
+                description.set("Periodik is a read-only property delegate that can provide a value updated periodically")
                 url.set("https://github.com/makiftutuncu/periodik")
                 licenses {
                     license {
