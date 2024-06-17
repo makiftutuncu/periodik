@@ -19,6 +19,6 @@ jobs:
           distribution: 'temurin'
           cache: 'gradle'
       - name: Validate Gradle wrapper
-        uses: gradle/wrapper-validation-action@63d15e7a1e697b1de6f3ba0507106f89100c8518
+        uses: gradle/wrapper-validation-action@88425854a36845f9c881450d9660b5fd46bee142
       - name: Run tests
         run: ./gradlew clean test
