@@ -22,7 +22,7 @@ dependencies {
     testImplementation("org.jetbrains.kotlin:kotlin-test:1.9.22") {
         exclude("org.junit.jupiter")
     }
-    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.0")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.9.0")
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.10.1")
 }
 
