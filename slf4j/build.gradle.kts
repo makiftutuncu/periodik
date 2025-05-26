@@ -60,10 +60,10 @@ tasks.withType<KotlinCompile> {
     }
 }
 
-tasks.getByName<Test>("test") {
+tasks.withType<Test> {
     useJUnitPlatform()
     testLogging {
-        events = setOf(
+        events(
             TestLogEvent.PASSED,
             TestLogEvent.SKIPPED,
             TestLogEvent.FAILED
