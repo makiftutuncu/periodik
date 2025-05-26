@@ -6,7 +6,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import java.net.URI
 
 plugins {
-    kotlin("jvm") version "1.9.22"
+    kotlin("jvm") version "2.1.21"
     `java-library`
     `maven-publish`
     idea
