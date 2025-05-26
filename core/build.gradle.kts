@@ -23,7 +23,8 @@ dependencies {
         exclude("org.junit.jupiter")
     }
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.0")
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.10.1")
+    testImplementation("org.junit.jupiter:junit-jupiter:5.9.2")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
 buildscript {
@@ -60,10 +61,10 @@ tasks.withType<KotlinCompile> {
     }
 }
 
-tasks.getByName<Test>("test") {
+tasks.withType<Test> {
     useJUnitPlatform()
     testLogging {
-        events = setOf(
+        events(
             TestLogEvent.PASSED,
             TestLogEvent.SKIPPED,
             TestLogEvent.FAILED
