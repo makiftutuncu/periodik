@@ -19,10 +19,10 @@ Periodik is a read-only property delegate that can provide a value updated perio
 
 This project consists of following modules. You can click on a module for more information and detailed instructions.
 
-| Name                     | Details             | Documentation                                                                                                                                                                 |
-|--------------------------|---------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| [core](core/README.md)   | Core implementation | [![](https://img.shields.io/badge/docs-0.2.0-brightgreen.svg?style=for-the-badge&logo=kotlin&color=0095d5&labelColor=333333)](https://javadoc.io/doc/dev.akif/periodik-core)  |
-| [slf4j](slf4j/README.md) | SLF4J integration   | [![](https://img.shields.io/badge/docs-0.2.0-brightgreen.svg?style=for-the-badge&logo=kotlin&color=0095d5&labelColor=333333)](https://javadoc.io/doc/dev.akif/periodik-slf4j) |
+| Name                     | Details             | Documentation                                                                                                                                                                                         |
+|--------------------------|---------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| [core](core/README.md)   | Core implementation | [![](https://img.shields.io/badge/docs-0.2.0-brightgreen.svg?style=for-the-badge&logo=kotlin&color=0095d5&labelColor=333333)](https://javadoc.io/doc/dev.akif/periodik-core/latest/core/index.html)   |
+| [slf4j](slf4j/README.md) | SLF4J integration   | [![](https://img.shields.io/badge/docs-0.2.0-brightgreen.svg?style=for-the-badge&logo=kotlin&color=0095d5&labelColor=333333)](https://javadoc.io/doc/dev.akif/periodik-slf4j/latest/slf4j/index.html) |
 
 ## Examples
 
