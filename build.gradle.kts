@@ -1,3 +1,5 @@
+import java.time.LocalDate
+
 plugins {
     kotlin("jvm") version "2.1.21"
     id("io.github.gradle-nexus.publish-plugin") version "2.0.0"
@@ -6,20 +8,20 @@ plugins {
 
 allprojects {
     group = "dev.akif"
-    version = "0.1.0"
+    version = "0.2.0"
 }
 
 subprojects {
     apply(plugin = "org.jetbrains.dokka")
-
-    tasks.dokkaHtml.configure {
-        dokkaSourceSets.configureEach {
-            failOnWarning.set(true)
-            reportUndocumented.set(true)
-            skipEmptyPackages.set(true)
-            skipDeprecated.set(false)
-            suppressGeneratedFiles.set(true)
-            includes.from("Module.md")
+    dokka {
+        moduleName = "${rootProject.name}-${project.name}"
+        dokkaPublications.html {
+            failOnWarning = true
+            suppressObviousFunctions = true
+        }
+        pluginsConfiguration.html {
+            footerMessage = "&#169; ${LocalDate.now().year} Mehmet Akif Tütüncü"
+            separateInheritedMembers = true
         }
     }
 }

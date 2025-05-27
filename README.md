@@ -4,7 +4,7 @@ Periodik is a read-only property delegate that can provide a value updated perio
 
 | Latest Version | Kotlin Version | Java Version |
 |----------------|----------------|--------------|
-| 0.1.0          | 1.9.22         | 17           |
+| 0.2.0          | 2.1.21         | 21           |
 
 ## Table of Contents
 
@@ -21,8 +21,8 @@ This project consists of following modules. You can click on a module for more i
 
 | Name                     | Details             | Documentation                                                                                                                                                                 |
 |--------------------------|---------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| [core](core/README.md)   | Core implementation | [![](https://img.shields.io/badge/docs-0.1.0-brightgreen.svg?style=for-the-badge&logo=kotlin&color=0095d5&labelColor=333333)](https://javadoc.io/doc/dev.akif/periodik-core)  |
-| [slf4j](slf4j/README.md) | SLF4J integration   | [![](https://img.shields.io/badge/docs-0.1.0-brightgreen.svg?style=for-the-badge&logo=kotlin&color=0095d5&labelColor=333333)](https://javadoc.io/doc/dev.akif/periodik-slf4j) |
+| [core](core/README.md)   | Core implementation | [![](https://img.shields.io/badge/docs-0.2.0-brightgreen.svg?style=for-the-badge&logo=kotlin&color=0095d5&labelColor=333333)](https://javadoc.io/doc/dev.akif/periodik-core)  |
+| [slf4j](slf4j/README.md) | SLF4J integration   | [![](https://img.shields.io/badge/docs-0.2.0-brightgreen.svg?style=for-the-badge&logo=kotlin&color=0095d5&labelColor=333333)](https://javadoc.io/doc/dev.akif/periodik-slf4j) |
 
 ## Examples
 

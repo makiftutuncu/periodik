@@ -1,2 +1,2 @@
 rootProject.name = "periodik"
-include("core", "slf4j")
+include("core", "docs", "slf4j")

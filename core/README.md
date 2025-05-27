@@ -16,14 +16,14 @@ For Gradle with Kotlin DSL, add following to `build.gradle.kts`:
 
 ```kotlin
 dependencies {
-  implementation('dev.akif:periodik-core:0.1.0')
+  implementation('dev.akif:periodik-core:0.2.0')
 }
 ```
 For Gradle, add following to `build.gradle`:
 
 ```kotlin
 dependencies {
-  implementation 'dev.akif:periodik-core:0.1.0'
+  implementation 'dev.akif:periodik-core:0.2.0'
 }
 ```
 For Maven, add following to your `pom.xml`:
@@ -32,7 +32,7 @@ For Maven, add following to your `pom.xml`:
 <dependency>
     <groupId>dev.akif</groupId>
     <artifactId>periodik-core</artifactId>
-    <version>0.1.0</version>
+    <version>0.2.0</version>
 </dependency>
 ```
 

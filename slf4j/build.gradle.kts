@@ -2,11 +2,6 @@ import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import org.jetbrains.dokka.base.DokkaBase
-import org.jetbrains.dokka.base.DokkaBaseConfiguration
-import java.net.URI
-import java.time.LocalDate
 
 plugins {
     kotlin("jvm") version "2.1.21"
@@ -40,24 +35,21 @@ idea {
 }
 
 kotlin {
-    jvmToolchain(17)
+    jvmToolchain(21)
+    compilerOptions {
+        freeCompilerArgs.set(listOf("-Xjsr305=strict", "-Xjvm-default=all"))
+        jvmTarget.set(JvmTarget.JVM_21)
+        languageVersion.set(KotlinVersion.fromVersion(KotlinVersion.KOTLIN_2_1.version))
+    }
 }
 
 java {
     toolchain {
-        languageVersion.set(JavaLanguageVersion.of(17))
+        languageVersion.set(JavaLanguageVersion.of(21))
     }
-    sourceCompatibility = JavaVersion.VERSION_17
-    targetCompatibility = JavaVersion.VERSION_17
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
     withSourcesJar()
-}
-
-tasks.withType<KotlinCompile> {
-    kotlinOptions {
-        freeCompilerArgs = listOf("-Xjsr305=strict", "-Xjvm-default=all")
-        jvmTarget = JvmTarget.JVM_17.target
-        languageVersion = KotlinVersion.KOTLIN_1_9.version
-    }
 }
 
 tasks.withType<Test> {
@@ -77,24 +69,20 @@ tasks.withType<Test> {
 }
 
 tasks.register<Jar>("dokkaHtmlJar") {
-    dependsOn(tasks.dokkaHtml)
-    from(tasks.dokkaHtml.flatMap { it.outputDirectory })
+    val dokkaTask = project(":docs").tasks.named("dokkaGeneratePublicationHtml")
+    dependsOn(dokkaTask)
+    from(dokkaTask.map { it.outputs.files })
     archiveClassifier.set("javadoc")
 }
 
-tasks.dokkaHtmlPartial.configure {
-    dokkaSourceSets {
-        configureEach {
-            sourceLink {
-                localDirectory.set(file("src/main/kotlin"))
-                remoteUrl.set(URI("https://github.com/makiftutuncu/periodik/blob/main/slf4j/src/main/kotlin").toURL())
-                remoteLineSuffix.set("#L")
-            }
+dokka {
+    dokkaSourceSets.main {
+        includes.from("Module.md")
+        sourceLink {
+            localDirectory.set(file("src/main/kotlin"))
+            remoteUrl("https://github.com/makiftutuncu/periodik/blob/main/slf4j/src/main/kotlin")
+            remoteLineSuffix.set("#L")
         }
-    }
-    pluginConfiguration<DokkaBase, DokkaBaseConfiguration> {
-        footerMessage = "&#169; ${LocalDate.now().year} Mehmet Akif Tütüncü"
-        separateInheritedMembers = true
     }
 }
 
@@ -137,7 +125,6 @@ publishing {
         }
     }
 }
-
 
 signing {
     setRequired {
