@@ -16,7 +16,7 @@ idea {
 
 buildscript {
     dependencies {
-        classpath("org.jetbrains.dokka:dokka-base:2.0.0")
+        classpath("org.jetbrains.dokka:dokka-base:2.2.0")
     }
 }
 
