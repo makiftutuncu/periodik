@@ -18,7 +18,7 @@ repositories {
 dependencies {
     implementation(project(":core"))
     implementation("ch.qos.logback:logback-classic:1.5.18")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.11.0")
 }
 
 buildscript {
